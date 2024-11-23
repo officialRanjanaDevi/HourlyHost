@@ -30,6 +30,9 @@ const partnerSchema=new mongoose.Schema({
     profile:{
         type:String,
     },
+    banner:{
+        type:String,
+    },
     contact:{
         type:Number,
         minlength: [10, 'Invalid contact number'],

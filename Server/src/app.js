@@ -5,7 +5,7 @@ const app = express();
 app.use(cookieParser());
 
 app.use(cors({
-  origin: ['http://localhost:5173'], 
+  origin: ['http://localhost:5173',"*"], 
   credentials: true, 
 }));
 
@@ -18,8 +18,9 @@ app.use(express.static("public"));
 
 //routes declaration
 app.get('/', (req, res) => {
-  res.send('Hi, World! This is a simple route.');
+  res.send('Hi, World! Welcome to Hourly Host');
  
 });
-
+import authRouter from "./routes/auth.routes.js";
+app.use("/auth",authRouter)
 export { app };
