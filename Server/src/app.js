@@ -21,6 +21,8 @@ app.get('/', (req, res) => {
   res.send('Hi, World! Welcome to Hourly Host');
  
 });
-import authRouter from "./routes/auth.routes.js";
+import authRouter from "./routes/user.routes.js";
 app.use("/auth",authRouter)
+import partnerRouter from "./routes/partner.routes.js";
+app.use("/partner",partnerRouter)
 export { app };
