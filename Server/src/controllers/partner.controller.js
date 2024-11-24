@@ -136,6 +136,7 @@ const viewPost=asyncHandler(async(req,res)=>{
   const posts=await Post.find({partner:id});
   return res.status(200).json(new ApiResponse(200,posts,"Posts fetched successfully"))
 })
+
 const deletePost=asyncHandler(async(req,res)=>{
     
     const id=req.params;

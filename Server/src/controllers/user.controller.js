@@ -343,6 +343,35 @@ const addReview=asyncHandler(async(req,res)=>{
   return res.status(200).json(new ApiResponse(200,review,"Review added successfully"))
 })
 
+//add to favourite
+//remove from fav
+//sort accounts based on user location
+
+const addToFavourite=asyncHandler(async(req,res)=>{
+   const id=req.params;
+   const partner=await Partner.findById(id);
+   if(!partner){
+    throw new ApiError(400,"No such account exits.")
+   }
+   const favourite=await Favourite.create({
+      user:req.user._id,
+      partner:id
+   })
+   if(!favourite){
+    throw new ApiError(500,"Server issue,Failed to add in favourites , please try again.")
+   }
+   return res.status(200).json(new ApiResponse(200,favourite,"Added to your favourites list"))
+})
+
+const removeFromFavourite=asyncHandler(async(req,res)=>{
+  const id=req.params;
+  
+  const favourite=await Favourite.findByIdAndDelete({partner:id})
+  if(!favourite){
+   throw new ApiError(400,"No such account exists")
+  }
+  return res.status(200).json(new ApiResponse(200,favourite,"Account remove from your favourites list"))
+})
 export {
   signup,
   signin,
@@ -355,5 +384,7 @@ export {
   viewAllAccount,
   viewAccount,
   deleteReview,
-  addReview
+  addReview,
+  addToFavourite,
+  removeFromFavourite
 };
