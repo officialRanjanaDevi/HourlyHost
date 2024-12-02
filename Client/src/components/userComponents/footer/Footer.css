@@ -1,0 +1,15 @@
+.usefull-link{
+    @apply hover:text-slate-400 hover:font-bold
+ }
+ 
+ i{
+    @apply mx-2 text-2xl text-neutral-400 hover:scale-110 duration-300
+ }
+ 
+ .usefull-link-bar{
+    @apply mt-4 flex justify-between sm:justify-around md:justify-evenly basis-2/5 
+ }
+ 
+ .social-media-bar{
+    @apply flex md:justify-between px-6 py-4 bg-neutral-200 text-black flex-wrap items-center justify-center
+ }

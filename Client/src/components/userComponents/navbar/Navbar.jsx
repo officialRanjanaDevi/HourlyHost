@@ -49,8 +49,9 @@ function Navbar() {
   };
 
   return (
-    <AppBar  sx={{ backgroundColor: "black", padding: "0rem 1rem" }}>
-      <Toolbar disableGutters>
+    <div className=" flex justify-between items-center shadow-sm shadow-neutral-400 p-2"
+   
+  >  
         <Typography
           variant="h6"
           noWrap
@@ -67,8 +68,12 @@ function Navbar() {
         >
           HourlyHost
         </Typography>
+        <div className="w-1/3 flex justify-center">
+        <input type ="text" className="w-[90%] rounded-full bg-neutral-100"/>
+        <button className="bg-slate-900 text-white px-1 rounded-full">Submit </button>
+        </div>
 
-        {/* For mobile menu */}
+      {/* For mobile menu */}
         <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
           <IconButton
             size="large"
@@ -105,14 +110,7 @@ function Navbar() {
               }}
               onClick={handleCloseNavMenu}
             >
-              <Link to="/Vehicle" className="mobile-app-bar-transition">
-                <div>
-                  <ArrowForwardIcon
-                    sx={{ fontSize: "1.2rem", color: "#555" }}
-                  ></ArrowForwardIcon>
-                  Vehicle
-                </div>
-              </Link>
+            
              
               <Link
                 to="/favourite"
@@ -125,7 +123,7 @@ function Navbar() {
                   <ArrowForwardIcon
                     sx={{ fontSize: "1.2rem", color: "#555" }}
                   ></ArrowForwardIcon>
-                  Wishlist
+                  F
                 </div>
               </Link>
               <Link
@@ -183,92 +181,15 @@ function Navbar() {
           RentMotors
         </Typography>
 
-        {/* For desktop menu */}
-        <Box
-          className="relative"
-          sx={{
-            flexGrow: 1,
-            display: { xs: "none", md: "flex", justifyContent: "center" },
-          }}
-        >
-          <Link
-            to="/Vehicle"
-            className=" desktop-app-bar "
-            onClick={() => {
-              setMenu("Vehicle");
-            }}
-            style={{
-              opacity: menu === "Vehicle" ? 1 : 0.7,
-              fontWeight: menu === "Vehicle" ? "bold" : "normal",
-            }}
-          >
-            Vehicle
-          </Link>
-          <Link
-            to="/About"
-            className=" desktop-app-bar "
-            onClick={() => {
-              setMenu("About");
-            }}
-            style={{
-              opacity: menu === "About" ? 1 : 0.7,
-              fontWeight: menu === "About" ? "bold" : "normal",
-            }}
-          >
-            About us
-          </Link>
-         
-          <Link
-            to="/contact"
-            className="desktop-app-bar"
-            onClick={() => {
-              setMenu("contact");
-            }}
-            style={{
-              opacity: menu === "contact" ? 1 : 0.7,
-              fontWeight: menu === "contact" ? "bold" : "normal",
-            }}
-          >
-            Contact
-          </Link>
-          <Link
-            to="/wishlist"
-            className="desktop-app-bar"
-            onClick={() => {
-              setMenu("wishlist");
-            }}
-            style={{
-                opacity: menu === "wishlist" ? 1 : 0.7,
-                fontWeight: menu === "wishlist" ? "bold" : "normal",
-              display: userType==="Client" ? "block" : "none",
-            }}
-          >
-            Wishlist
-          </Link>
-          <Link
-            to="/cart"
-            className="desktop-app-bar"
-            onClick={() => {
-              setMenu("cart");
-            }}
-            style={{
-                opacity: menu === "cart" ? 1 : 0.7,
-                fontWeight: menu === "cart" ? "bold" : "normal",
-              display: userType==="Client" ? "block" : "none",
-            }}
-          >
-            cart
-          </Link>
-        </Box>
-
+       
         {/* User avatar menu */}
         <Box sx={{ flexGrow: 0 }}>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar
                 alt="User Avatar"
-                src={localStorage.getItem("userimage") || "/static/images/avatar/2.jpg"} 
-                sx={{ backgroundColor: " rgb(101 163 13)" }}
+                src={"/static/images/avatar/2.jpg"} 
+                sx={{ backgroundColor: " rgb(15 23 42)" }}
               />
             </IconButton>
           </Tooltip>
@@ -295,7 +216,7 @@ function Navbar() {
               }}
             >
               <Link to="/signin" className="hover:text-black">
-                Login
+                Signin
               </Link>
             </MenuItem>
             <MenuItem
@@ -314,7 +235,7 @@ function Navbar() {
                 display: userType ? "block" : "none",
               }}
             >
-              <Link to="/signout" className="hover:text-black">
+              <Link to="/profile" className="hover:text-black">
                 Profile
               </Link>
             </MenuItem>
@@ -324,20 +245,11 @@ function Navbar() {
                 display: userType==="Client" ? "block" : "none",
               }}
             >
-              <Link to="/order" className="hover:text-black">
-                Orders
+              <Link to="/favourite" className="hover:text-black">
+                Favourite
               </Link>
             </MenuItem>
-            <MenuItem
-              onClick={handleCloseUserMenu}
-              sx={{
-                display: userType==="Renter" ? "block" : "none",
-              }}
-            >
-              <Link to="/renter" className="hover:text-black">
-                Dashboard
-              </Link>
-            </MenuItem>
+         
             <MenuItem
               onClick={handleCloseUserMenu}
               sx={{
@@ -345,13 +257,13 @@ function Navbar() {
               }}
             >
               <Link to="/signout" className="hover:text-black">
-                Logout
+                Signout
               </Link>
             </MenuItem>
           </Menu>
         </Box>
-      </Toolbar>
-    </AppBar>
+      
+    </div>
   );
 }
 
