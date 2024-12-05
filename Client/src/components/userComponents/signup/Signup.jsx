@@ -1,38 +1,107 @@
-import React,{useState} from 'react'
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+
+
 const Signup = () => {
-  const [credentials,setCredentials]=useState({email:"",password:""});
-  const handleSubmit=()=>{
+  const navigate=useNavigate();
+  const [apiData, setApiData] = useState({});
+  const [alert, setAlert] = useState({ message: "", status: "" });
+  const [credentials, setCredentials] = useState({
+    username: "",
+    email: "",
+    password: "",
+    address: "",
+    city: "",
+    state: "",
+    pincode: "",
+    contact: "",
+    lat: null,
+    lon: null,
+  });
+ 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+      const res = await fetch("http://localhost:4000/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+      const response = await res.json();
+      console.log(response)
+      setAlert({ message: response.message, status: response.success?"success":"error" });
+      // if(response.success){
+      //   navigate("/")
+      // }
+  };
 
-  }
+  const onChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
 
-  const onChange=()=>{
+  useEffect(() => {
+    const getLocation = async () => {
+      const success = async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        try {
+          const res = await fetch(
+            `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&apiKey=c36f43855b7a475f81728aff6c6be569`
+          );
+          const response = await res.json();
+          setApiData(response.features[0].properties);
+        
+          setCredentials((prev) => ({ ...prev, lat, lon }));
+        } catch (e) {
+          setAlert({ message:"Failed to get your current location !", status: "error" });
+          console.error(e);
+        }
+      };
 
-  }
+      const failed = () => {
+        setAlert({ message:"Failed to get your current location !", status: "error" });
+        console.error("Geolocation failed");
+      };
+
+      navigator.geolocation.getCurrentPosition(success, failed);
+    };
+
+    getLocation();
+  }, []);
+
+  useEffect(() => {
+    setCredentials((prev) => ({
+      ...prev,
+      address: apiData.address_line1 || "",
+      city: apiData.city || "",
+      state: apiData.state || "",
+      pincode: Number(apiData.postcode) || "",
+    }));
+  }, [apiData]);
+
+  
   return (
-    <div className='mt-10'> 
+    <div className="mt-10">
+       <Snackbar
+        open={Boolean(alert.message)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        autoHideDuration={2000}
+        onClose={()=>setAlert({ message: "", status: "" })}
+        className="w-1/2 mx-auto my-4"
+      >
+        <Alert variant="filled" severity={alert.status}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
+
       {/* Login Form */}
       <form
         onSubmit={handleSubmit}
         className="grid  bg-neutral-100 mx-auto w-[90vw] md:w-[50vw] p-6 rounded-lg shadow-md"
       >
-        <div className="mb-4 col-span-12">
-          <label
-            htmlFor="email"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Email
-          </label>
-          <input
-            name="email"
-            onChange={onChange}
-            placeholder="Enter your email"
-            type="email"
-            value={credentials.email}
-            required
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
         <div className="mb-4 col-span-12">
           <label
             htmlFor="username"
@@ -50,6 +119,24 @@ const Signup = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
+        <div className="mb-4 col-span-12">
+          <label
+            htmlFor="email"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Email
+          </label>
+          <input
+            name="email"
+            onChange={onChange}
+            placeholder="Enter your email"
+            type="email"
+            value={credentials.email}
+            required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+
         <div className="mb-4 col-span-12">
           <label
             htmlFor="address"
@@ -161,7 +248,7 @@ const Signup = () => {
           >
             Submit
           </button>
-          <p className='text-sm'>
+          <p className="text-sm">
             Already have an account:{" "}
             <Link to={"/signin"} className="text-blue-500">
               SignIn here
@@ -170,7 +257,7 @@ const Signup = () => {
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default Signup
+export default Signup;

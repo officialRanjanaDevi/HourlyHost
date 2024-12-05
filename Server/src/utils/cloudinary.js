@@ -1,4 +1,8 @@
 import pkg from "cloudinary";
+import dotenv from "dotenv";
+dotenv.configDotenv({
+  path: ".env",
+});
 const { v2: cloudinary } = pkg;
 import fs from "fs";
 

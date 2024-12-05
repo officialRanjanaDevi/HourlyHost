@@ -34,7 +34,7 @@ const signup = asyncHandler(async (req, res) => {
   // remove the password and refresh token before sending userdata in response
   // if user created then return success
 
-  const { username, email, password, address,state,pincode,city } = req.body;
+  const { username, email, password, address,state,pincode,city,lat,lon } = req.body;
   const existedUser = await User.findOne({ email });
   if (existedUser) {
     throw new ApiError(409, "User already exists with same email");
@@ -47,7 +47,13 @@ const signup = asyncHandler(async (req, res) => {
     address,
     state,
     pincode,
-    city
+    city,
+    latitude:lat,
+    longitude:lon,
+    location: {
+      type: "Point",
+      coordinates: [parseFloat(lon), parseFloat(lat)],
+  },
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -88,7 +94,7 @@ const signin = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(user._id)
 
-   return res
+  return res
     .status(200)
     .cookie("accessToken", accessToken, {
         maxAge:  24 * 60 * 60 * 1000,

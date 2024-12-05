@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-
+import dotenv from "dotenv";
+dotenv.configDotenv({
+  path: ".env",
+});
 const partnerSchema=new mongoose.Schema({
     name:{
         type:String,

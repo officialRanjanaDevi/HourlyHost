@@ -6,7 +6,7 @@
 // view reviews
 
 
-import Partner from "../models/Partner.js";
+import {Partner} from "../models/Partner.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";

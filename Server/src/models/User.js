@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import dotenv from "dotenv";
+dotenv.configDotenv({
+  path: ".env",
+});
 
 const userSchema=new mongoose.Schema({
     username:{
@@ -37,6 +41,25 @@ const userSchema=new mongoose.Schema({
     },
     pincode:{
         type:String
+    },
+    latitude: {
+        type: mongoose.Schema.Types.Decimal128,
+        required: true,
+    },
+    longitude: {
+        type: mongoose.Schema.Types.Decimal128,
+        required: true,
+    },
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'], 
+            required: true,
+        },
+        coordinates: {
+            type: [Number], 
+            required: true,
+        },
     },
     refreshToken:{
         type:String

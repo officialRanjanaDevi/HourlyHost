@@ -2,7 +2,10 @@ import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 import { Partner } from "../models/Partner.js";
-
+import dotenv from "dotenv";
+dotenv.configDotenv({
+  path: ".env",
+});
 
 const partnerVerifyJWT = asyncHandler(async (req, res, next) => {
     try {

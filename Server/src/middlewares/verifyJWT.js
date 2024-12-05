@@ -1,4 +1,8 @@
 import { ApiError } from "../utils/ApiError.js";
+import dotenv from "dotenv";
+dotenv.configDotenv({
+  path: ".env",
+});
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
@@ -6,7 +10,7 @@ import { User } from "../models/User.js";
 const verifyJWT = asyncHandler(async (req, res, next) => {
     try {
     
-        const token =req.cookies?.accessToken ||req.header("Authorization")?.replace("Bearer ", "");
+      const token =req.cookies?.accessToken ||req.header("Authorization")?.replace("Bearer ", "");
      
   
       if (!token) {
