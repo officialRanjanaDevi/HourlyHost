@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 
-const Signin = () => {
+const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [alert, setAlert] = useState({ message: "", status: "" });
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const Signin = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch(`${import.meta.env.VITE_SERVER}/auth/signin`, {
+    const res = await fetch(`${import.meta.env.VITE_SERVER}/partner/login`, {
       method: "POST",
       credentials:"include",
       headers: {
@@ -26,7 +26,7 @@ const Signin = () => {
     if (response.success) {
       setAlert({ message: response.message, status: "success" });
       setTimeout(() => {
-        navigate("/");
+        navigate("/myAccount");
       }, 1000);
     } else {
       setAlert({ message: response.message, status: "error" });
@@ -100,8 +100,8 @@ const Signin = () => {
           </button>
           <p className="text-sm">
             Create an account:{" "}
-            <Link to={"/signup"} className="text-blue-500">
-              Signup here
+            <Link to={"/createAccount"} className="text-blue-500">
+              Create Account
             </Link>
           </p>
         </div>
@@ -110,4 +110,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default Login;

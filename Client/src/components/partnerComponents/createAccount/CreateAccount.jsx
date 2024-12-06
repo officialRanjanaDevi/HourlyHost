@@ -4,12 +4,12 @@ import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 
 
-const Signup = () => {
+const CreateAccount = () => {
   const navigate=useNavigate();
   const [apiData, setApiData] = useState({});
   const [alert, setAlert] = useState({ message: "", status: "" });
   const [credentials, setCredentials] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
     address: "",
@@ -19,11 +19,12 @@ const Signup = () => {
     contact: "",
     lat: null,
     lon: null,
+    type:""
   });
  
   const handleSubmit = async (e) => {
     e.preventDefault();
-      const res = await fetch(`${import.meta.env.VITE_SERVER}/auth/signup`, {
+      const res = await fetch(`${import.meta.env.VITE_SERVER}/partner/createAccount`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,9 +34,19 @@ const Signup = () => {
       const response = await res.json();
       console.log(response)
       setAlert({ message: response.message, status: response.success?"success":"error" });
-      // if(response.success){
-      //   navigate("/")
-      // }
+      if(response.success){
+        setCredentials( {name: "",
+          email: "",
+          password: "",
+          address: "",
+          city: "",
+          state: "",
+          pincode: "",
+          contact: "",
+          lat: null,
+          lon: null,
+          type:""})
+      }
   };
 
   const onChange = (e) => {
@@ -104,17 +115,17 @@ const Signup = () => {
       >
         <div className="mb-4 col-span-12">
           <label
-            htmlFor="username"
+            htmlFor="name"
             className="block text-gray-700 text-sm font-bold mb-2"
           >
-            Username
+            Name
           </label>
           <input
-            name="username"
+            name="name"
             onChange={onChange}
             placeholder="Enter your username"
             type="text"
-            value={credentials.username}
+            value={credentials.name}
             required
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
@@ -222,6 +233,28 @@ const Signup = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
+        <div className="mb-4 col-span-6">
+          <label
+            htmlFor="state"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Type
+          </label>
+          <select
+              name="type"
+              required
+              onChange={onChange}
+              value={credentials.type}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline "
+             
+            >
+              <option value="">Select type </option>
+              <option value="chef" >Chef/Cook </option>
+              <option value="electrician" >Electrician </option>
+              <option value="plumber" >Plumber </option>
+              <option value="househelper" >House-Helper/Maid </option>
+            </select>
+        </div>
 
         <div className="mb-4 col-span-12">
           <label
@@ -260,4 +293,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default CreateAccount;

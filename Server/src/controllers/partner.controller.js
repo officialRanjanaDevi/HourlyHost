@@ -7,11 +7,33 @@
 
 
 import {Partner} from "../models/Partner.js";
+import {Post} from  "../models/Post.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Review } from "../models/Review.js";
+import {uploadOnCloudinary} from "../utils/cloudinary.js"
 
+
+const generateAccessAndRefreshTokens = async (id) => {
+  try {
+
+    const partner = await Partner.findById(id);
+    const accessToken = partner.generateAccessToken();
+    const refreshToken = partner.generateRefreshToken();
+     partner.refreshToken = refreshToken;
+ 
+    await partner.save({ validateBeforeSave: false });
+   
+    return { accessToken, refreshToken };
+  } catch (error) {
+    console.log("Error while generating access token",error)
+    throw new ApiError(
+      500,
+      "Something went wrong while generating access and refresh token"
+    );
+  }
+};
 const createAccount = asyncHandler(async (req, res) => {
   const {
     name,
@@ -23,13 +45,15 @@ const createAccount = asyncHandler(async (req, res) => {
     city,
     state,
     pincode,
+    lat,lon
   } = req.body;
+  console.log(req.body)
+  const registeredPartner = await Partner.findOne({email});
 
-  const registeredPartner = await Partner.find({ email });
   if (registeredPartner) {
     throw new ApiError(400, "Already registered with this email.");
   }
-
+ 
   const newPartner = await Partner.create({
     name: name.toLowerCase(),
     email,
@@ -40,6 +64,13 @@ const createAccount = asyncHandler(async (req, res) => {
     state: state.toLowerCase(),
     pincode,
     city: city.toLowerCase(),
+    latitude:lat,
+    longitude:lon,
+    location: {
+      type: "Point",
+      coordinates: [parseFloat(lon), parseFloat(lat)],
+  }
+
   });
 
   if (!newPartner) {
@@ -58,19 +89,19 @@ const createAccount = asyncHandler(async (req, res) => {
 
 const loginAccount=asyncHandler(async(req,res)=>{
     const {email,password} =req.body;
-    const account=await Partner.find({email})
-    if(!account){
+    const partner=await Partner.findOne({email})
+    if(!partner){
         throw new ApiError("No account with this email");
     }
-    const isPasswordValid = await account.isPasswordCorrect(password);
+    const isPasswordValid = await partner.isPasswordCorrect(password);
     if (!isPasswordValid) {
       throw new ApiError(401, "Invalid credentials");
     }
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-        account._id
+        partner._id
       );
-    const partnerAccount =await Partner.findById(account._id).select("-password -refreshToken");
+    const partnerAccount =await Partner.findById(partner._id).select("-password -refreshToken");
     if(!partnerAccount){
         throw new ApiError(500,"Server issue! Failed to logged in. Please try again.");
     }
@@ -100,11 +131,21 @@ const logoutAccount=asyncHandler(async(req,res)=>{
       .json(new ApiResponse(200, {}, "You are now logged out"));
 })
 
+const getAccountInfo=asyncHandler(async(req,res)=>{
+    const id = req.partner._id;
+  
+    const account=await Partner.findById(id).select("-password -refreshToken -location -latitude -longitude");
+    if(!account){
+      throw new ApiError(400,"No such account exists")
+    }
+    return res.status(200).json(new ApiResponse(200, account, "Welcome back to your account"))
+})
+
 const addPost=asyncHandler(async(req,res)=>{
-    const partner=req.partner
+  const partner=req.partner
   const imagePath = req.file.path;
   const {caption}=req.body;
- let post;
+  let post;
   if (imagePath) {
     const imageUrl = await uploadOnCloudinary(imagePath);
     if (!imageUrl) {
@@ -122,7 +163,7 @@ const addPost=asyncHandler(async(req,res)=>{
     caption,
     likes:"0"
    })
-
+  
    if(!newPost){
     throw new ApiError(500,"Server issue! Failed to post, please try again.")
    }
@@ -164,4 +205,4 @@ const viewReviews=asyncHandler(async(req,res)=>{
     return res.status(200).json(new ApiResponse(200,reviews,"Reviews of your service are as follows"))
 })
 
-export { createAccount,loginAccount ,logoutAccount,addPost,deletePost,viewReviews ,viewPost};
+export { createAccount,loginAccount ,logoutAccount,addPost,deletePost,viewReviews ,viewPost,getAccountInfo};

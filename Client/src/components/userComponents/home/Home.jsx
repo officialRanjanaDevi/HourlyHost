@@ -1,9 +1,8 @@
 import React from "react";
 import { images } from "../../../assets/images";
-
+import { Link } from "react-router-dom";
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
 
 import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 const Home = () => {
@@ -26,8 +25,11 @@ const Home = () => {
               cooking, or tackling any household task, let us handle the rest.
               With effortless booking and expert solutions, we make life easier.
             </p>
-            <button className="bg-slate-900 text-white px-3 rounded-full mt-6 py-1 ">
+            <button className="bg-slate-900 text-white px-3 rounded-full mt-6 py-1 hover:scale-110 duration-700">
+              <Link to="/account">
               Explore Services
+              </Link>
+             
             </button>
           </div>
           <div className="w-full md:w-3/5 h-[50vh] md:h-full grid grid-cols-2 gap-y-8 items-center justify-items-center">
@@ -275,7 +277,7 @@ const Home = () => {
           </Step>
       </Stepper>
            
-       
+       <button className="w-40 bg-black text-white py-1 rounded-full hover:scale-110 duration-700"><Link to="/createAccount">Create Account</Link></button>
       
       </section>
     </div>

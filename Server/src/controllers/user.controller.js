@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/User.js";
+import { Partner } from "../models/Partner.js";
 import {Review} from "../models/Review.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
@@ -256,7 +257,10 @@ const updateImage= asyncHandler(async(req,res)=>{
 })
 
 const viewAllAccount=asyncHandler(async(req,res)=>{
-  const type=req.params
+  const type=req.params||"Chef"
+  console.log("hello")
+  const arr=await Partner.find({});
+  console.log("arr is" ,arr);
   const accounts=await Partner.aggregate([
     { $match: { type: type } },
     {$lookup:{
@@ -276,7 +280,7 @@ const viewAllAccount=asyncHandler(async(req,res)=>{
     }},
     {$project:{ratings:0}}
   ]);
-
+  console.log(accounts)
   return res.status(200).json(new ApiResponse(200,accounts,"Accounts are fetched"))
 })
 
